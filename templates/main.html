@@ -9,42 +9,88 @@
         input { display: block; margin-bottom: 10px; width: 100%; box-sizing: border-box; padding: 5px; }
         button { padding: 8px 15px; cursor: pointer; }
         #result { margin-top: 20px; font-weight: bold; color: green; }
+
+        /* Стили для нового блока задач */
+        #taskContainer { margin-top: 30px; max-width: 400px; }
+        .task-list { list-style: none; padding: 0; }
+        .task-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .status-badge {
+            font-size: 12px;
+            padding: 3px 7px;
+            border-radius: 3px;
+            background: #e0e0e0;
+        }
     </style>
 </head>
 <body>
 
-    <h2>Форма 1: Имя</h2>
+    <h2>Создать новую задачу</h2>
     <form id="nameForm">
-        <input type="text" name="name" placeholder="Введите имя" required>
+        <input type="text" name="text" placeholder="Введите текст задачи" required>
     </form>
 
-    <h2>Форма 2: Возраст</h2>
-    <form id="ageForm">
-        <input type="number" name="age" placeholder="Введите возраст" required>
-    </form>
-
-    <!-- Общая кнопка для сбора данных и отправки -->
     <button type="button" onclick="sendData()">Отправить данные</button>
 
     <div id="result"></div>
 
+    <!-- НОВЫЙ БЛОК: Окно для отображения списка задач -->
+    <div id="taskContainer">
+        <h3>Список задач</h3>
+        <ul id="taskList" class="task-list">
+            <!-- Сюда JavaScript будет вставлять задачи -->
+        </ul>
+    </div>
+
     <script>
+        // НОВАЯ ФУНКЦИЯ: Получает все задачи с сервера и обновляет интерфейс
+        async function loadTasks() {
+            try {
+                const response = await fetch('/tasks');
+                const tasks = await response.json();
+
+                const taskList = document.getElementById('taskList');
+                taskList.innerHTML = ''; // Очищаем старый список перед обновлением
+
+                if (tasks.length === 0) {
+                    taskList.innerHTML = '<li>Задач пока нет</li>';
+                    return;
+                }
+
+                // Перебираем каждую задачу и добавляем её в список
+                tasks.forEach(task => {
+                    const li = document.createElement('li');
+                    li.className = 'task-item';
+                    li.innerHTML = `
+                        <span>${task.text}</span>
+                        <span class="status-badge">${task.status ? 'Выполнено' : 'В процессе'}</span>
+                    `;
+                    taskList.appendChild(li);
+                });
+            } catch (error) {
+                console.error('Ошибка при загрузке задач:', error);
+            }
+        }
+
+        // Вызываем загрузку задач сразу при старте страницы, чтобы увидеть сохраненные ранее
+        window.addEventListener('DOMContentLoaded', loadTasks);
+
+
         async function sendData() {
-            // 1. Получаем формы
             const nameForm = document.getElementById('nameForm');
-            const ageForm = document.getElementById('ageForm');
+            const nameValue = new FormData(nameForm).get('text');
 
-            // 2. Вытаскиваем значения из полей
-            const nameValue = new FormData(nameForm).get('name');
-            const ageValue = new FormData(ageForm).get('age');
+            if (!nameValue) return; // Не отправляем пустую строку
 
-            // 3. Формируем плоский JSON, который ожидает ваша модель ItemPayload
             const payload = {
-                name: nameValue,
-                age: parseInt(ageValue) // Превращаем в число, так как в Pydantic указан int
+                text: nameValue
             };
 
-            // 4. Отправляем fetch-запрос
             try {
                 const response = await fetch('/postdata', {
                     method: 'POST',
@@ -56,9 +102,15 @@
 
                 const data = await response.json();
 
-                // Выводим ответ от FastAPI на экран
+                document.getElementById('result').style.color = response.ok ? 'green' : 'red';
                 document.getElementById('result').innerText = `Ответ сервера: ${JSON.stringify(data)}`;
+
+                if (response.ok) {
+                    nameForm.reset(); // Очищаем поле ввода после успешной отправки
+                    loadTasks();      // МГНОВЕННО обновляем список задач на экране!
+                }
             } catch (error) {
+                document.getElementById('result').style.color = 'red';
                 document.getElementById('result').innerText = 'Ошибка при отправке данных';
                 console.error(error);
             }

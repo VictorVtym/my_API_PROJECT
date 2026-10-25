@@ -17,8 +17,10 @@ class TaskModel(Base):
     status: Mapped[bool]
 
 
+"""
 async def bd_main():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
 asyncio.run(bd_main())
+"""
