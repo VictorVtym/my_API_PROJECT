@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Отправка Payload в FastAPI</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        form { margin-bottom: 15px; padding: 10px; border: 1px solid #ccc; width: 300px; }
+        input { display: block; margin-bottom: 10px; width: 100%; box-sizing: border-box; padding: 5px; }
+        button { padding: 8px 15px; cursor: pointer; }
+        #result { margin-top: 20px; font-weight: bold; color: green; }
+    </style>
+</head>
+<body>
+
+    <h2>Форма 1: Имя</h2>
+    <form id="nameForm">
+        <input type="text" name="name" placeholder="Введите имя" required>
+    </form>
+
+    <h2>Форма 2: Возраст</h2>
+    <form id="ageForm">
+        <input type="number" name="age" placeholder="Введите возраст" required>
+    </form>
+
+    <!-- Общая кнопка для сбора данных и отправки -->
+    <button type="button" onclick="sendData()">Отправить данные</button>
+
+    <div id="result"></div>
+
+    <script>
+        async function sendData() {
+            // 1. Получаем формы
+            const nameForm = document.getElementById('nameForm');
+            const ageForm = document.getElementById('ageForm');
+
+            // 2. Вытаскиваем значения из полей
+            const nameValue = new FormData(nameForm).get('name');
+            const ageValue = new FormData(ageForm).get('age');
+
+            // 3. Формируем плоский JSON, который ожидает ваша модель ItemPayload
+            const payload = {
+                name: nameValue,
+                age: parseInt(ageValue) // Превращаем в число, так как в Pydantic указан int
+            };
+
+            // 4. Отправляем fetch-запрос
+            try {
+                const response = await fetch('/postdata', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                // Выводим ответ от FastAPI на экран
+                document.getElementById('result').innerText = `Ответ сервера: ${JSON.stringify(data)}`;
+            } catch (error) {
+                document.getElementById('result').innerText = 'Ошибка при отправке данных';
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>
