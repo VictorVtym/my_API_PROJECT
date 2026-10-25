@@ -17,4 +17,4 @@ class ItemPayload(BaseModel):
 
 @app.post("/postdata")
 async def postdata(payload: ItemPayload):
-    return {"message": "Товар создан", "Имя пользователя": payload.name}
+    return {"message": "Товар теперь создан", "Имя пользователя": payload.name}
