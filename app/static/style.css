@@ -1,0 +1,74 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 40px;
+    background-color: #0a205e;
+}
+.form-group {
+    margin-bottom: 15px;
+    max-width: 300px;
+}
+/* Селектор изменен, чтобы стили не ломали чекбоксы */
+.form-group input[type="text"] {
+    display: block;
+    margin-bottom: 10px;
+    width: 100%; padding: 10px;
+    box-sizing: border-box;
+}
+button {
+    padding: 8px 15px;
+    cursor: pointer;
+    border-radius: 20px;
+    border: 1px solid #faf6f6;
+    background-color: #1a4e92;
+    color: white;
+    font-weight: bold;
+}
+h2 {
+    color: #a9d8f7;
+}
+h3 {
+    color: #92bb32;
+}
+
+.task-list {
+    list-style: none;
+    padding: 0;
+    max-width: 450px;
+    margin-top: 20px;
+}
+.task-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+}
+.task-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.task-completed {
+    text-decoration: line-through;
+    color: #888;
+}
+.task-buttons {
+    display: flex;
+    gap: 5px;
+}
+.btn-edit {
+    background-color: #3d8869;
+    border: 1px solid #3d8869;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 3px;
+}
+.btn-delete {
+    background-color: #dc3545;
+    color: white;
+    border: 1px solid #bd2130;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 3px;
+}
