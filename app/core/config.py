@@ -1,5 +1,8 @@
+import os
 from dataclasses import dataclass
+from dotenv import load_dotenv
 
+load_dotenv()
 
 @dataclass(frozen=True)
 class Settings:
@@ -8,6 +11,5 @@ class Settings:
 
 def get_settings() -> Settings:
     return Settings(
-        DATABASE_URL = "postgresql+psycopg://postgres:admin@127.0.0.1:5432/postgres",
-        #DATABASE_URL = "postgresql+asyncpg://postgres:admin@127.0.0.1:5432/postgres",
+        DATABASE_URL=os.environ["DATABASE_URL"],
     )

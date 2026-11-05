@@ -1,4 +1,4 @@
-const BASE_URL = "http://127.0.0.1:8000"; // Укажите порт вашего FastAPI
+const BASE_URL = ""; // Укажите порт вашего FastAPI
 let editingTaskId = null;
 
 // Загрузка списка задач (GET)

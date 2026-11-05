@@ -25,7 +25,7 @@ app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 @app.get("/")
 def welcome() -> dict:
-    return FileResponse("templates/main.html")
+    return FileResponse("app/templates/main.html")
 
 
 # source .venv/Scripts/activate
@@ -36,3 +36,6 @@ def welcome() -> dict:
 # docker exec -it pg_container psql -U postgres
 # \q или Ctrl + D
 # docker stop pg-container
+# docker compose down -v
+# docker compose up --build
+# http://localhost:8080/docs
